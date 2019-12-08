@@ -59,13 +59,18 @@
  * (Danny Ramirez)
  * 
  * 12/07/2019 - Created the initial database integration.
+ * (Danny Ramirez)
+ * 
+ * 12/08/2019 - Set the background music to start after the users presses any
+ *              key during the welcome screen.
+ *            - Added a points pop up whenever the user collects a food item
  */
 
 // Declare variables
 let canvas, database;
 let snake, display, 
 inputLeft, inputRight, inputUp, inputDown, inputDebug, inputRestart,inputMute, inputPause;
-let score, highScore;
+let score, highScore, points;
 
 
 // Game state
@@ -106,6 +111,7 @@ let food = {
     },
     size: 20
 };
+
 
 function preload() {
     if (debugOn) {
@@ -161,9 +167,10 @@ function update() {
             if (debugOn) {
                 console.log("Food collected!");
             }
+            display.points(`+${points}`, food.position.x, food.position.y);
             soundCollect.play();
             snake.tailSize++;
-            score++;
+            score += points;
             spawnFood();
         }
     
@@ -273,14 +280,14 @@ function keyPressed() {
 function draw() {
     background(22, 22, 22);
 
-    update();
+    
     // If statement to test gameState and display accordingly
     if (gameState === "welcome") {
        // placeholder text
        textFont(regFont);
        fill(255);
        textSize(26);
-       text("Click Enter to play", 200, 300);
+       text("Press Any Key", gameWidth / 3, gameWidth / 2);
 
        // if any button is pressed game starts
        if (keyIsPressed === true) {
@@ -288,6 +295,10 @@ function draw() {
            if (debugOn) {
                console.log("Game State =", gameState);
            }
+           if (!music.isPlaying()) {
+            music.play();
+            music.setLoop(true);
+        }
        }
     } else if (gameState === "pause") {
         // displays box with "Paused" text over paused game
@@ -322,13 +333,15 @@ function draw() {
         fill(255);
         text(" Press R to play again", cellSize *15, cellSize* 22);
    } else if (gameState ==="playing") {
-	display.grid();
-        display.score();
-        display.highScore(); 
-        display.snakeTail();
-        display.snakeHead();
-        display.food();
-   }
+       display.grid();
+       display.score();
+       display.highScore(); 
+       display.snakeTail();
+       display.snakeHead();
+       display.food();
+    }
+
+    update();
 }
 
 function resetGame() {
@@ -336,6 +349,8 @@ function resetGame() {
         console.log("Resetting game...");
     }
     initControls();
+
+    points = 5;
 
     if (highScore < score) {
         highScore = score;
@@ -352,10 +367,7 @@ function resetGame() {
     display = new Display();
     snake = new Snake(floor(random(0, MAX_COLS)), floor(random(0, MAX_ROWS)));
 
-    if (!music.isPlaying()) {
-        music.play();
-        music.setLoop(true);
-    }
+    
 
     if (debugOn) {
         console.log("Game State =", gameState);
