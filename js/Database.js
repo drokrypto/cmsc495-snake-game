@@ -73,3 +73,4 @@ class Database {
         console.log("There was an error retreiving the database data!");
         console.log(error);
     }
+}
