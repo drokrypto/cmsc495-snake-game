@@ -258,6 +258,10 @@ function keyPressed() {
             case inputRestart:
                 console.log("Reset game!");
                 resetGame();
+                if (!music.isPlaying()) {
+                    music.play();
+                    music.setLoop(true);
+                }
                 gameState = "playing";
                 break;
             case inputMute:
@@ -298,7 +302,7 @@ function draw() {
            if (!music.isPlaying()) {
             music.play();
             music.setLoop(true);
-        }
+           }
        }
     } else if (gameState === "pause") {
         // displays box with "Paused" text over paused game
@@ -366,8 +370,6 @@ function resetGame() {
 
     display = new Display();
     snake = new Snake(floor(random(0, MAX_COLS)), floor(random(0, MAX_ROWS)));
-
-    
 
     if (debugOn) {
         console.log("Game State =", gameState);
