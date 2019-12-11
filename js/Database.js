@@ -17,8 +17,11 @@
  * (Rachael Schutzman)
  *
  * 12/07/2019 - Created the database connnection using Firebase, and the
- * gotData(), errorData() funcitons.
+ * gotData(), errorData() functions.
  * (Danny Ramirez)
+ *
+ * 12/11/2019 - Created initial insertData() function.
+ * (Rachael Schutzman)
  *
  */
 
@@ -73,3 +76,12 @@ class Database {
         console.log("There was an error retreiving the database data!");
         console.log(error);
     }
+    
+   insertData(initials, score) {
+        playerInfo = {
+             initials: this.initials,
+             score: this.score
+        }
+        ref.push(playerInfo);
+   }
+}
