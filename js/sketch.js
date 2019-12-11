@@ -312,7 +312,8 @@ function draw() {
         display.snakeTail();
         display.snakeHead();
         display.food();
-
+        
+        if (highscore > score) {
         fill(22, 22, 22);
         rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
         textSize(26);
@@ -321,6 +322,10 @@ function draw() {
         textSize(20);
         fill(255);
         text(" Press R to play again", cellSize *15, cellSize* 22);
+        } else {
+            initials = window.prompt("Please enter your initials:");
+            insertData(initials, score);
+        }
    } else if (gameState ==="playing") {
 	display.grid();
         display.score();
