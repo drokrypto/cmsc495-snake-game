@@ -59,6 +59,10 @@
  * (Danny Ramirez)
  * 
  * 12/07/2019 - Created the initial database integration.
+ *
+ * 12/11/2019 - Created new if statement within draw() to check whether highscore>score when gameState="over"
+ *              and added window.prompt() for initials and insertData() function with initials and score parameters.
+ * (Rachael Schutzman)
  */
 
 // Declare variables
