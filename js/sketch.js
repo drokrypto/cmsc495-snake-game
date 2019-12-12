@@ -57,20 +57,14 @@
  * 12/04/2019 - Disabled page scroll using keyboard to keep the canvas in
  *              view at all times while playing the game.
  * (Danny Ramirez)
- * 
- * 12/07/2019 - Created the initial database integration.
- * (Danny Ramirez)
- * 
- * 12/08/2019 - Set the background music to start after the users presses any
- *              key during the welcome screen.
- *            - Added a points pop up whenever the user collects a food item
  */
 
 // Declare variables
-let canvas, database;
+let canvas, element;
 let snake, display, 
 inputLeft, inputRight, inputUp, inputDown, inputDebug, inputRestart,inputMute, inputPause;
-let score, highScore, points;
+let score, highScore;
+let initials = score;
 
 
 // Game state
@@ -112,7 +106,6 @@ let food = {
     size: 20
 };
 
-
 function preload() {
     if (debugOn) {
         console.log("Debug Mode ON");
@@ -132,14 +125,10 @@ function preload() {
 }
 
 function setup() {
-
     if (debugOn) {
         console.log("Loading game...");
         console.log("Game State =", gameState);
     }
-
-    database = new Database();
-    database.ref.on("value", database.gotData, database.errorData);
 
     preventScroll();
 
@@ -156,6 +145,8 @@ function setup() {
     
 }
 
+
+
 function update() {
 
     if (gameState === "playing") {
@@ -167,10 +158,9 @@ function update() {
             if (debugOn) {
                 console.log("Food collected!");
             }
-            display.points(`+${points}`, food.position.x, food.position.y);
             soundCollect.play();
             snake.tailSize++;
-            score += points;
+            score++;
             spawnFood();
         }
     
@@ -258,10 +248,6 @@ function keyPressed() {
             case inputRestart:
                 console.log("Reset game!");
                 resetGame();
-                if (!music.isPlaying()) {
-                    music.play();
-                    music.setLoop(true);
-                }
                 gameState = "playing";
                 break;
             case inputMute:
@@ -284,24 +270,20 @@ function keyPressed() {
 function draw() {
     background(22, 22, 22);
 
-    
+    update();
     // If statement to test gameState and display accordingly
     if (gameState === "welcome") {
        // placeholder text
        textFont(regFont);
        fill(255);
        textSize(26);
-       text("Press Any Key", gameWidth / 3, gameWidth / 2);
+       text("Click Enter to play", 200, 300);
 
        // if any button is pressed game starts
        if (keyIsPressed === true) {
            gameState = "playing";
            if (debugOn) {
                console.log("Game State =", gameState);
-           }
-           if (!music.isPlaying()) {
-            music.play();
-            music.setLoop(true);
            }
        }
     } else if (gameState === "pause") {
@@ -322,7 +304,7 @@ function draw() {
         // displays box with "Game Over" text over ended game and prompts user to press
         // "R" to restart
         display.grid();
-	display.score();
+	    display.score();
         display.highScore(); 
         display.snakeTail();
         display.snakeHead();
@@ -337,15 +319,13 @@ function draw() {
         fill(255);
         text(" Press R to play again", cellSize *15, cellSize* 22);
    } else if (gameState ==="playing") {
-       display.grid();
-       display.score();
-       display.highScore(); 
-       display.snakeTail();
-       display.snakeHead();
-       display.food();
-    }
-
-    update();
+	display.grid();
+        display.score();
+        display.highScore(); 
+        display.snakeTail();
+        display.snakeHead();
+        display.food();
+   }
 }
 
 function resetGame() {
@@ -353,8 +333,6 @@ function resetGame() {
         console.log("Resetting game...");
     }
     initControls();
-
-    points = 5;
 
     if (highScore < score) {
         highScore = score;
@@ -370,6 +348,11 @@ function resetGame() {
 
     display = new Display();
     snake = new Snake(floor(random(0, MAX_COLS)), floor(random(0, MAX_ROWS)));
+
+    if (!music.isPlaying()) {
+        music.play();
+        music.setLoop(true);
+    }
 
     if (debugOn) {
         console.log("Game State =", gameState);

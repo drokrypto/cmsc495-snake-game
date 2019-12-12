@@ -1,33 +1,19 @@
-/* * * * * * * * * * * * * * * * *
- *    CMST 495 6380 Group 2      *
- * * * * * * * * * * * * * * * * *
- *
- * Name: food.js
- * Author: Rachael Schutzman, Selamawit Asfaw, Danny Ramirez, Gilda Hogan, Gavin Spain
- * Description: Handles the food's creation.
- *
- */
-
-/* Revision History
- * 12/01/2019 - Initially created.
- * (Selamawit Asfaw)
- * 
- * 12/09/2019 - Updated the spawnFood method to randomly create the food 
- *              position.
- * (Selamawit Asfaw)
- * 
- */
-class food {
-    constructor(x, y) {
-        this.position = {
-            x: 0,
-            y: 0
-        };
-        this.size = 20;
-        this.spawnFood();
+var createFood = function() {
+          food = {
+            //Generate random numbers.
+            x: Math.floor((Math.random() * 30) + 1),
+            y: Math.floor((Math.random() * 30) + 1)
+        }
+        
+        //Look at the position of the snake's body.
+        for (var i=0; i>snake.length; i++) {
+            var snakeX = snake[i].x;
+            var snakeY = snake[i].y;
+            
+             if (food.x===snakeX || food.y === snakeY || food.y === snakeY && food.x===snakeX) {
+                food.x = Math.floor((Math.random() * 30) + 1);
+                food.y = Math.floor((Math.random() * 30) + 1);
+            }
+        }
     }
-    spawnFood() {
-    food.position.x = floor(random(0, MAX_COLS));
-    food.position.y = floor(random(0, MAX_ROWS - 1));
-}
-}
+   

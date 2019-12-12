@@ -28,9 +28,6 @@
  * 12/01/2019 - Added noStroke() functions to snake and tail and right before text functions to keep from getting
  *              an outline.
  * (Rachael Schutzman)
- * 
- * 12/08/2019 - Added points pop up
- * (Danny Ramirez)
  *
  */
 
@@ -85,15 +82,5 @@ class Display {
         textFont("Impact");
         text("High Score", cellSize * 31  , 3 * cellSize);
         text(highScore, cellSize * 33  , 5 * cellSize);
-    }
-
-    points(str, x, y) {
-        this.str = str;
-        this.x = x;
-        this.y = y;
-        noStroke();
-        fill(255);
-        text(this.str, gridStartX + this.x * cellSize, gridStartY + this.y * cellSize
-        );
     }
 }
