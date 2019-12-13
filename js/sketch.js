@@ -347,9 +347,18 @@ function draw() {
             fill(255);
             text(" Press R to play again", cellSize *15, cellSize* 22);
             } else {
-                window.location.replace(window.location.href);
-                initials = window.prompt("Please enter your initials:");
-                database.insertData(initials, score);
+                if (initials == null || initials == ""){
+                     initials = prompt("Congratulations! You beat the high score.\nPlease enter your initials:");
+                     database.insertData(initials, score);
+                }
+                fill(22, 22, 22);
+                rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
+                textSize(26);
+                fill(255);
+                text("- Game Over! -", cellSize * 16, cellSize * 21);
+                textSize(20);
+                fill(255);
+                text(" Press R to play again", cellSize *15, cellSize* 22);
             }
    } else if (gameState ==="playing") {
        display.grid();
@@ -377,6 +386,7 @@ function resetGame() {
         highScore = 0;
     }
     score = 0;
+    initials = null;
 
     if (gameState !== "welcome") {
         gameState = "playing";
