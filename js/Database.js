@@ -17,11 +17,16 @@
  * (Rachael Schutzman)
  *
  * 12/07/2019 - Created the database connnection using Firebase, and the
- * gotData(), errorData() functions.
+ * gotData(), errorData() funcitons.
  * (Danny Ramirez)
- *
+ * 
  * 12/11/2019 - Created initial insertData() function.
  * (Rachael Schutzman)
+ * 
+ * 12/13/2019 - Updated insertData() to include user parameters and set the 
+ *              database collection
+ *            - Updated database variables to better reflect the project design
+ * (Danny Ramirez)
  *
  */
 
@@ -43,7 +48,7 @@ class Database {
         firebase.initializeApp(this.firebaseConfig);
         firebase.analytics();
 
-        this.collectionName = "scores";
+        this.collectionName = "Scores";
         this.db = firebase.database();
         this.ref = this.db.ref(this.collectionName);
 
@@ -61,8 +66,8 @@ class Database {
         console.log("====== High Scores =======");
         for (let i = 0; i < keys.length; i++) {
             let k = keys[i];
-            let initials = scores[k].initials;
-            let score = scores[k].score;
+            let initials = scores[k].player_intl;
+            let score = scores[k].player_score;
 
             let li = createElement("li", `${initials}  ${score}`);
             li.parent("score-list");
@@ -76,12 +81,12 @@ class Database {
         console.log("There was an error retreiving the database data!");
         console.log(error);
     }
-    
-   insertData(initials, score) {
-        playerInfo = {
-             initials: this.initials,
-             score: this.score
-        }
-        ref.push(playerInfo);
+
+    insertData(initials, score) {
+        let playerInfo = {
+             player_intl: initials,
+             player_score: score
+        };
+        this.ref.push(playerInfo);
    }
 }

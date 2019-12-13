@@ -59,17 +59,27 @@
  * (Danny Ramirez)
  * 
  * 12/07/2019 - Created the initial database integration.
- *
- * 12/11/2019 - Created new if statement within draw() to check whether highscore>score when gameState="over"
- *              and added window.prompt() for initials and insertData() function with initials and score parameters.
+ * (Danny Ramirez)
+ * 
+ * 12/08/2019 - Set the background music to start after the users presses any
+ *              key during the welcome screen.
+ *            - Added a points pop up whenever the user collects a food item
+ * (Danny Ramirez)
+ * 
+ * 12/11/2019 - Created new if statement within draw() to check whether highscore>score when gameState="over" and added window.prompt() for initials and insertData() function with initials and score parameters.
  * (Rachael Schutzman)
+ * 
+ * 12/13/2019 - Updated the if statement in the draw() with a page redirect 
+ *              after getting user's initials
+ * (Danny Ramirez)
+ * 
  */
 
 // Declare variables
 let canvas, database;
 let snake, display, 
 inputLeft, inputRight, inputUp, inputDown, inputDebug, inputRestart,inputMute, inputPause;
-let score, highScore;
+let score, highScore, points;
 
 
 // Game state
@@ -110,6 +120,7 @@ let food = {
     },
     size: 20
 };
+
 
 function preload() {
     if (debugOn) {
@@ -165,9 +176,10 @@ function update() {
             if (debugOn) {
                 console.log("Food collected!");
             }
+            display.points(`+${points}`, food.position.x, food.position.y);
             soundCollect.play();
             snake.tailSize++;
-            score++;
+            score += points;
             spawnFood();
         }
     
@@ -255,6 +267,10 @@ function keyPressed() {
             case inputRestart:
                 console.log("Reset game!");
                 resetGame();
+                if (!music.isPlaying()) {
+                    music.play();
+                    music.setLoop(true);
+                }
                 gameState = "playing";
                 break;
             case inputMute:
@@ -277,20 +293,24 @@ function keyPressed() {
 function draw() {
     background(22, 22, 22);
 
-    update();
+    
     // If statement to test gameState and display accordingly
     if (gameState === "welcome") {
        // placeholder text
        textFont(regFont);
        fill(255);
        textSize(26);
-       text("Click Enter to play", 200, 300);
+       text("Press Any Key", gameWidth / 3, gameWidth / 2);
 
        // if any button is pressed game starts
        if (keyIsPressed === true) {
            gameState = "playing";
            if (debugOn) {
                console.log("Game State =", gameState);
+           }
+           if (!music.isPlaying()) {
+            music.play();
+            music.setLoop(true);
            }
        }
     } else if (gameState === "pause") {
@@ -316,28 +336,31 @@ function draw() {
         display.snakeTail();
         display.snakeHead();
         display.food();
-        
-        if (highscore > score) {
-        fill(22, 22, 22);
-        rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
-        textSize(26);
-        fill(255);
-        text("- Game Over! -", cellSize * 16, cellSize * 21);
-        textSize(20);
-        fill(255);
-        text(" Press R to play again", cellSize *15, cellSize* 22);
-        } else {
-            initials = window.prompt("Please enter your initials:");
-            insertData(initials, score);
-        }
+
+        if (highScore > score) {
+            fill(22, 22, 22);
+            rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
+            textSize(26);
+            fill(255);
+            text("- Game Over! -", cellSize * 16, cellSize * 21);
+            textSize(20);
+            fill(255);
+            text(" Press R to play again", cellSize *15, cellSize* 22);
+            } else {
+                window.location.replace(window.location.href);
+                initials = window.prompt("Please enter your initials:");
+                database.insertData(initials, score);
+            }
    } else if (gameState ==="playing") {
-	display.grid();
-        display.score();
-        display.highScore(); 
-        display.snakeTail();
-        display.snakeHead();
-        display.food();
-   }
+       display.grid();
+       display.score();
+       display.highScore(); 
+       display.snakeTail();
+       display.snakeHead();
+       display.food();
+    }
+
+    update();
 }
 
 function resetGame() {
@@ -345,6 +368,8 @@ function resetGame() {
         console.log("Resetting game...");
     }
     initControls();
+
+    points = 5;
 
     if (highScore < score) {
         highScore = score;
@@ -360,11 +385,6 @@ function resetGame() {
 
     display = new Display();
     snake = new Snake(floor(random(0, MAX_COLS)), floor(random(0, MAX_ROWS)));
-
-    if (!music.isPlaying()) {
-        music.play();
-        music.setLoop(true);
-    }
 
     if (debugOn) {
         console.log("Game State =", gameState);
