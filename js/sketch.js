@@ -64,6 +64,15 @@
  * 12/08/2019 - Set the background music to start after the users presses any
  *              key during the welcome screen.
  *            - Added a points pop up whenever the user collects a food item
+ * (Danny Ramirez)
+ * 
+ * 12/11/2019 - Created new if statement within draw() to check whether highscore>score when gameState="over" and added window.prompt() for initials and insertData() function with initials and score parameters.
+ * (Rachael Schutzman)
+ * 
+ * 12/13/2019 - Updated the if statement in the draw() with a page redirect 
+ *              after getting user's initials
+ * (Danny Ramirez)
+ * 
  */
 
 // Declare variables
@@ -328,14 +337,20 @@ function draw() {
         display.snakeHead();
         display.food();
 
-        fill(22, 22, 22);
-        rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
-        textSize(26);
-        fill(255);
-        text("- Game Over! -", cellSize * 16, cellSize * 21);
-        textSize(20);
-        fill(255);
-        text(" Press R to play again", cellSize *15, cellSize* 22);
+        if (highScore > score) {
+            fill(22, 22, 22);
+            rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
+            textSize(26);
+            fill(255);
+            text("- Game Over! -", cellSize * 16, cellSize * 21);
+            textSize(20);
+            fill(255);
+            text(" Press R to play again", cellSize *15, cellSize* 22);
+            } else {
+                window.location.replace(window.location.href);
+                initials = window.prompt("Please enter your initials:");
+                database.insertData(initials, score);
+            }
    } else if (gameState ==="playing") {
        display.grid();
        display.score();
