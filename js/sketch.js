@@ -347,9 +347,10 @@ function draw() {
             fill(255);
             text(" Press R to play again", cellSize *15, cellSize* 22);
             } else {
-                window.location.replace(window.location.href);
-                initials = window.prompt("Please enter your initials:");
+                if (initials == null || initials == ""){
+                initials = prompt("Congratulations! You beat the high score.\nPlease enter your initials:");
                 database.insertData(initials, score);
+                }
             }
    } else if (gameState ==="playing") {
        display.grid();
@@ -377,6 +378,7 @@ function resetGame() {
         highScore = 0;
     }
     score = 0;
+    initials = "";
 
     if (gameState !== "welcome") {
         gameState = "playing";
