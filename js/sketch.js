@@ -73,6 +73,10 @@
  *              after getting user's initials
  * (Danny Ramirez)
  * 
+ * 12/13/2019 - Updated draw() to stop window.prompt() for initial prompt from looping endlessly.
+ *              New if loop created to check if initials were null or "". initial variable reset added to reset()
+ *              Endless loop resolved.
+ * (Rachael Schutzman)
  */
 
 // Declare variables
