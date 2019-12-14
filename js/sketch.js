@@ -72,10 +72,17 @@
  * 12/13/2019 - Updated the if statement in the draw() with a page redirect 
  *              after getting user's initials
  * (Danny Ramirez)
- * 
+ *
  * 12/13/2019 - Updated draw() to stop window.prompt() for initial prompt from looping endlessly.
  *              New if loop created to check if initials were null or "". initial variable reset added to reset()
  *              Endless loop resolved.
+ * (Rachael Schutzman)
+ * 
+ * 12/14/2019 - Added if statement to check if user input included only three alphanumeric 
+ *              characters.
+ *            - Created error alert message if user did not enter valid initials and set
+ *              initials to null so user would be prompted for initials again. Only entered into
+ * 		database if valid.
  * (Rachael Schutzman)
  */
 
@@ -351,9 +358,16 @@ function draw() {
             fill(255);
             text(" Press R to play again", cellSize *15, cellSize* 22);
             } else {
+                // check if initials variable blank or null before prompting for initials
                 if (initials == null || initials == ""){
                      initials = prompt("Congratulations! You beat the high score.\nPlease enter your initials:");
-                     database.insertData(initials, score);
+                    // checks if user entered invalid characters or number of characters
+                     if (initials.match(/^[0-9a-zA-z]{1,3}$/)) {
+                         database.insertData(initials, score);
+                     } else {
+		         alert("Error! Initials must be alphanumeric and no more than three characters");
+                         initials = null;
+                     }    
                 }
                 fill(22, 22, 22);
                 rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
