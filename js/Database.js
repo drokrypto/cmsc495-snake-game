@@ -88,4 +88,10 @@ class Database {
             score: this.score
         });
    }
+    
+   getHighScore(){
+       var highscore = this.ref.orderByChild('score').limitToLast(1);
+       console.log(highscore);
+       return highscore;
+   }
 }
