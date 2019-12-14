@@ -72,6 +72,11 @@
  * 12/13/2019 - Updated the if statement in the draw() with a page redirect 
  *              after getting user's initials
  * (Danny Ramirez)
+ *
+ * 12/13/2019 - Updated draw() to stop window.prompt() for initial prompt from looping endlessly.
+ *              New if loop created to check if initials were null or "". initial variable reset added to reset()
+ *              Endless loop resolved.
+ * (Rachael Schutzman)
  * 
  * 12/14/2019 - Added if statement to check if user input included only three alphanumeric 
  *              characters.
