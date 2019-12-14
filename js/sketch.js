@@ -73,11 +73,17 @@
  *              after getting user's initials
  * (Danny Ramirez)
  * 
+<<<<<<< HEAD
  * 12/14/2019 - Added if statement to check if user input included only three alphanumeric 
  *              characters.
  *            - Created error alert message if user did not enter valid initials and set
  *              initials to null so user would be prompted for initials again. Only entered into
  * 		database if valid.
+=======
+ * 12/13/2019 - Updated draw() to stop window.prompt() for initial prompt from looping endlessly.
+ *              New if loop created to check if initials were null or "". initial variable reset added to reset()
+ *              Endless loop resolved.
+>>>>>>> master
  * (Rachael Schutzman)
  */
 
