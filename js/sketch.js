@@ -86,7 +86,7 @@
  * (Rachael Schutzman)
  * 
  * 12/15/2019 - Added the getHighScore() and set the current high score based
- *              on the top score in the leaderboard. 
+ *              on the top score present in the leaderboard. 
  *            - Changed the Mute and  Resart options for general gameplay 
  *              and not just debug mode.
  *            - Integrated the Food class from Selamawit
