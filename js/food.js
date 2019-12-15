@@ -16,18 +16,20 @@
  *              position.
  * (Selamawit Asfaw)
  * 
+ * 12/15/2019 - Updated class name and formating.
+ * (Danny Ramirez)
  */
-class food {
+class Food {
     constructor(x, y) {
         this.position = {
             x: 0,
             y: 0
         };
         this.size = 20;
-        this.spawnFood();
+        this.spawn();
     }
-    spawnFood() {
-    food.position.x = floor(random(0, MAX_COLS));
-    food.position.y = floor(random(0, MAX_ROWS - 1));
-}
+    spawn() {
+        this.position.x = floor(random(0, MAX_COLS));
+        this.position.y = floor(random(0, MAX_ROWS - 1));
+    }
 }

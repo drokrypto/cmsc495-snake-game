@@ -27,7 +27,14 @@
  *              database collection
  *            - Updated database variables to better reflect the project design
  * (Danny Ramirez)
+ * 
+ * 12/14/2019 - Created getHighScore() to retrive the highest score from the Database
+ * (Gavin Spain)
  *
+ * 12/15/2019 - Updated getHighScore() to fix the issue of not being able to 
+ *              read the top score from the database. Also set the highScore
+ *              value to that of the top score found in the database.
+ * (Danny Ramirez)
  */
 
 class Database {
@@ -57,7 +64,17 @@ class Database {
         }
     }
 
+    /**
+     * The following function is taken from a Coding Train tutorial
+     * @see https://shiffman.net/a2z/firebase/
+     */
     gotData(data) {
+        let scoreItems = selectAll(".score-item");
+
+        for (let i = 0; i < scoreItems.length; i++) {
+            scoreItems[i].remove();
+        }
+
         let scores = data.val();
         let keys = Object.keys(scores);
         keys.reverse();
@@ -70,6 +87,7 @@ class Database {
             let score = scores[k].player_score;
 
             let li = createElement("li", `${initials}  ${score}`);
+            li.class("score-item");
             li.parent("score-list");
             console.log(initials, score);
         }
@@ -77,16 +95,43 @@ class Database {
 
     }
 
+    /**
+     * The following function is taken from a Coding Train tutorial
+     * @see https://shiffman.net/a2z/firebase/
+     */
     errorData(error){
         console.log("There was an error retreiving the database data!");
         console.log(error);
     }
 
     insertData(initials, score) {
+        const player_id = this.ref.push().key;
         let playerInfo = {
              player_intl: initials,
              player_score: score
         };
-        this.ref.push(playerInfo);
+        // this.ref.push(playerInfo);
+        this.ref.child(player_id).update(playerInfo);
    }
+
+   getHighScore() {
+
+       this.ref.orderByChild("player_score").limitToLast(1).once("value", snapshot =>  {
+           let scores = snapshot.val();
+
+           let topPlayer = Object.values(scores);
+
+           let topPlayerInitials = topPlayer[0].player_intl;
+
+           let topScore = topPlayer[0].player_score;
+
+           highScore = topScore;
+
+           if (debugOn) {
+               console.log("Top Player:", topPlayerInitials);
+               console.log("Top Score:", topScore);
+           }
+        });
+
+    }
 }

@@ -84,11 +84,17 @@
  *              initials to null so user would be prompted for initials again. Only entered into
  * 		database if valid.
  * (Rachael Schutzman)
+ * 
+ * 12/15/2019 - Added the getHighScore() and set the current high score based
+ *              on the top score in the leaderboard. 
+ *            - Changed the Mute and  Resart options for general gameplay 
+ *              and not just debug mode.
+ *            - Integrated the Food class from Selamawit
  */
 
 // Declare variables
 let canvas, database;
-let snake, display, 
+let snake, food, display, 
 inputLeft, inputRight, inputUp, inputDown, inputDebug, inputRestart,inputMute, inputPause;
 let score, highScore, points;
 
@@ -123,16 +129,6 @@ let cellSize = 20;
 const MAX_ROWS = 35;
 const MAX_COLS = 40;
 
-// Initialize food variables
-let food = {
-    position: {
-        x: 0,
-        y: 0
-    },
-    size: 20
-};
-
-
 function preload() {
     if (debugOn) {
         console.log("Debug Mode ON");
@@ -159,7 +155,10 @@ function setup() {
     }
 
     database = new Database();
-    database.ref.on("value", database.gotData, database.errorData);
+
+   
+
+    database.ref.orderByChild("player_score").limitToLast(10).on("value", database.gotData, database.errorData);
 
     preventScroll();
 
@@ -191,7 +190,7 @@ function update() {
             soundCollect.play();
             snake.tailSize++;
             score += points;
-            spawnFood();
+            food.spawn();
         }
     
         for (let i = 0; i < snake.tail.length; i++) {
@@ -216,6 +215,7 @@ function update() {
 function keyPressed() {
     let keyWasPressed = false;
 
+    // Movement
     switch (keyCode) {
         case inputLeft:
             if (heading !== RIGHT) {
@@ -245,6 +245,7 @@ function keyPressed() {
         
     }
 
+    // Any key
     if (keyWasPressed) {
         soundTurn.play();
 
@@ -253,6 +254,7 @@ function keyPressed() {
         }
     }
 
+    // Pause
     if (key === inputPause) {
         if (gameState !== "pause") {
             console.log("Game paused!");
@@ -272,29 +274,36 @@ function keyPressed() {
         }
     }
 
-    // Debug
-    if (debugOn) {
-        switch (key) {
-            case inputRestart:
-                console.log("Reset game!");
-                resetGame();
-                if (!music.isPlaying()) {
-                    music.play();
-                    music.setLoop(true);
-                }
-                gameState = "playing";
-                break;
-            case inputMute:
-                if (music.isPaused()) {
-                    console.log("Music unmuted!");
-                    music.play();
-                } else {
-                    console.log("Music muted!");
-                    music.pause();
-                } 
+    // Restart
+    if (key === inputRestart) {
+        resetGame();
+        if (!music.isPlaying()) {
+            music.play();
+            music.setLoop(true);
+        }
+        gameState = "playing";
+
+        if (debugOn) {
+            console.log("Reset game!");
         }
     }
 
+    // Mute music
+    if (key === inputMute) {
+        if (music.isPaused()) {
+            if (debugOn) {
+                console.log("Music unmuted!");
+            }
+            music.play();
+        } else {
+            if (debugOn) {
+                console.log("Music muted!");
+            }
+            music.pause();
+        } 
+    }
+
+    // Debug
     if (keyCode === inputDebug) {
         debugOn = !debugOn;
         console.log("Debug Mode ON:", debugOn);
@@ -348,7 +357,7 @@ function draw() {
         display.snakeHead();
         display.food();
 
-        if (highScore > score) {
+        if (highScore >= score) {
             fill(22, 22, 22);
             rect(cellSize * 12, cellSize * 18, cellSize * 16, cellSize * 6);
             textSize(26);
@@ -396,23 +405,25 @@ function resetGame() {
     }
     initControls();
 
+    
     points = 5;
 
-    if (highScore < score) {
-        highScore = score;
-    } else {
-        highScore = 0;
-    }
+    database.getHighScore();
+
     score = 0;
     initials = null;
 
     if (gameState !== "welcome") {
         gameState = "playing";
     }
-    spawnFood();
-
+    
     display = new Display();
+
     snake = new Snake(floor(random(0, MAX_COLS)), floor(random(0, MAX_ROWS)));
+
+    food = new Food();
+
+    food.spawn();
 
     if (debugOn) {
         console.log("Game State =", gameState);
